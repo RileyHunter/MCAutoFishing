@@ -35,7 +35,11 @@ else:
 
 clf = RandomForestClassifier()
 y = df['label']
-X = df.drop('label', axis=1)
+df = df.drop(columns='label')
+df = df.drop(['Unnamed: 0'], axis=1)
+X = df
+print(X.head())
+print(y.head())
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y)
 clf.fit(X_train, y_train)
 preds = clf.predict(X_test)

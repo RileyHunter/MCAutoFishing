@@ -1,71 +1,31 @@
 import pyautogui
+from sub_capture_tool import SubCaptureTool
 import time
-import numpy
-from PIL import Image
-import atexit
-from pynput import mouse
+import joblib
+import numpy as np
+import cv2
 
-screenWidth, screenHeight = pyautogui.size()
-
-taskbarHeight = 40
-windowHeight = 28
-
-cursorX = (screenWidth / 2)
-cursorY = (((screenHeight - (taskbarHeight + windowHeight)) / 2) + windowHeight) - 3
-cursorDiameter = (screenHeight / 36) - 8 # ??
-
+sct = SubCaptureTool()
 time.sleep(5)
-
-ims = []
-for i in range(10):
-    time.sleep(0.2)
-    ims.append(pyautogui.screenshot(region=(cursorX, cursorY - cursorDiameter, cursorDiameter, cursorDiameter)))
-
-w,h=ims[0].size
-N=len(ims)
-
-arr=numpy.zeros((h,w,3),numpy.float)
-
-for im in ims:
-    imarr=numpy.array(im,dtype=numpy.float)
-    arr=arr+imarr/N
-
-arr=numpy.array(numpy.round(arr),dtype=numpy.uint8)
-avgColor = arr.mean(axis=0).mean(axis=0)
-#avg=Image.fromarray(arr,mode="RGB")
-#avg.show()
-
-print("Ready!")
-
-# events = 20
-# def on_click(x, y, button, pressed):
-#     global events 
-#     events -= 1
-#     if events <= 0:
-#         listener.stop()
-#     if pressed:
-#         im = pyautogui.screenshot(region=(cursorX, cursorY - cursorDiameter, cursorDiameter, cursorDiameter))
-#         arr=numpy.array(im,dtype=numpy.uint8)
-#         avgSampleColor = arr.mean(axis=0).mean(axis=0)
-#         print("===")
-#         print(avgColor)
-#         print(avgSampleColor)
-
-# listener = mouse.Listener(
-#     on_click=on_click)
-# listener.start()
-
-# while events > 0:
-#     pass
+clf = joblib.load('model.joblib')
 
 while True:
-    time.sleep(0.05)
-    im = pyautogui.screenshot(region=(cursorX, cursorY - cursorDiameter, cursorDiameter, cursorDiameter))
-    arr=numpy.array(im,dtype=numpy.uint8)
-    avgSampleColor = arr.mean(axis=0).mean(axis=0)
-    diffs = avgColor - avgSampleColor
-    squares = numpy.square(diffs)
-    sumSquaredDiff = numpy.sum(squares)
-    if sumSquaredDiff > 1000:
-        im = pyautogui.screenshot(region=(cursorX, cursorY - cursorDiameter, cursorDiameter, cursorDiameter))
-        im.show()
+    time.sleep(0.2)
+    for image in sct.capture():
+        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        gray, img_bin = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        gray = cv2.bitwise_not(img_bin)
+        if gray.shape[0] == 39:
+            app = np.zeros(gray.shape[1])
+            gray = np.append(gray, [app], axis=0)
+        features = np.concatenate(gray)
+        pred = clf.predict([features])
+        if pred == 'fishing_bobber_splashes':
+            do_fishing()
+
+def do_fishing():
+    time.sleep(0.2)
+    pyautogui.click(button='right')
+    time.sleep(1)
+    pyautogui.click(button='right')
+    time.sleep(4)
