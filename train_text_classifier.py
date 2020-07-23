@@ -5,6 +5,7 @@ import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from joblib import dump, load
 
 if not os.path.exists('dataframe.csv'):
     metadata = pandas.read_csv('imgs/labels.txt')
@@ -40,3 +41,5 @@ clf.fit(X_train, y_train)
 preds = clf.predict(X_test)
 print([f'{pred}={true}' for (pred, true) in zip(preds, y_test)])
 print(confusion_matrix(y_test, preds))
+
+dump(clf, 'model.joblib')
