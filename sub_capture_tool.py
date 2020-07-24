@@ -7,7 +7,8 @@ import time
 from fishing_config import *
 
 class SubCaptureTool:
-    def __init__(self):
+    def __init__(self, override_pos=False):
+        self.override_pos = override_pos
         # Config parsing
         # From bottom right - left, up; max width, line height.
         known_sizes = {
@@ -38,11 +39,16 @@ class SubCaptureTool:
         y2 = rect[3]
 
         # If in weird-screen mode
-        if x1 == -8 and y1 == -8:
+        if (x1 == -8 and y1 == -8):
             x2 += x1
             y2 += y1
             x1 = 0
             y1 = 0
+        if self.override_pos:
+            x1 = 0
+            y1 = 0
+            x2 = 1920
+            y2 = 1040
         print("Window %s:" % win32gui.GetWindowText(self.mc_hwnd))
         print("\tLocation top left: (%d, %d)" % (x1, y1))
         print("\tLocation bot right: (%d, %d)" % (x2, y2))

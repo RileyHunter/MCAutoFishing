@@ -5,9 +5,16 @@ import joblib
 import numpy as np
 import cv2
 
-sct = SubCaptureTool()
+sct = SubCaptureTool(True)
 time.sleep(5)
 clf = joblib.load('model.joblib')
+
+def do_fishing():
+    time.sleep(0.2)
+    pyautogui.click(button='right')
+    time.sleep(1)
+    pyautogui.click(button='right')
+    time.sleep(4)
 
 while True:
     time.sleep(0.2)
@@ -20,12 +27,7 @@ while True:
             gray = np.append(gray, [app], axis=0)
         features = np.concatenate(gray)
         pred = clf.predict([features])
+        if pred != 'garbage':
+            print(pred)
         if pred == 'fishing_bobber_splashes':
             do_fishing()
-
-def do_fishing():
-    time.sleep(0.2)
-    pyautogui.click(button='right')
-    time.sleep(1)
-    pyautogui.click(button='right')
-    time.sleep(4)
