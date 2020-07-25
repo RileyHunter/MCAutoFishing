@@ -24,7 +24,7 @@ class SubCaptureTool:
         def winEnumHandler(hwnd, ctx):
             if win32gui.IsWindowVisible(hwnd):
                 window_text = win32gui.GetWindowText(hwnd)
-                if "Minecraft" in window_text and not "Server" in window_text:
+                if "Minecraft" in window_text:
                     self.mc_hwnd = hwnd
 
         win32gui.EnumWindows( winEnumHandler, None )
