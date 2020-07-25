@@ -12,6 +12,7 @@ class SubCaptureTool:
         # Config parsing
         # From bottom right - left, up; max width, line height.
         known_sizes = {
+            2: (2, 50, 284, 20),
             4: (5, 98, 567, 40)
         }
 
@@ -67,4 +68,9 @@ class SubCaptureTool:
         segs = []
         for i in range(self.segments_to_sample):
             segs.append(imarr[-(((i + 1) * self.relative_sub_area[3]) + 1):-((i * self.relative_sub_area[3]) + 1), :])
+        segs = [self.auto_scale(seg) for seg in segs]
         return segs
+
+    def auto_scale(self, image):
+        res = cv2.resize(image, dsize=(567, 40), interpolation=cv2.INTER_CUBIC)
+        return res
