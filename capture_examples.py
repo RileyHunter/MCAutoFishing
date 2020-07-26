@@ -6,7 +6,7 @@ import time
 time.sleep(3)
 sct = SubCaptureTool()
 j = 0
-for i in range(20):
+for i in range(60):
     time.sleep(1)
     for seg in sct.capture():
         gray = cv2.cvtColor(seg, cv2.COLOR_RGB2GRAY)

@@ -38,8 +38,7 @@ or command prompt in administrator mode
 1) Run `py train_text_classifier.py` and try again
 ### ...and complained about something containing 'mc_hwnd' and 'raise'
 1) Go to the config and try using the `override_resolution` flag
-## Program spat out lots of rows of ['splashing'] or similar but
-wasn't fishing correctly
+## Program spat out lots of rows of ['splashing'] or similar but wasn't fishing correctly
 ### ...and I haven't tried `override_resolution` yet
 1) Go to the config and try setting the `override_resolution` to `True`
 1) Go back to setup and make sure you follow all the instructions, including the
@@ -53,12 +52,14 @@ optional ones
 to `j = <highest_number_plus_one>`
 1) Go into Minecraft and get ready to fish
 1) Run `py capture_examples.py`, quickly switch to Minecraft and start fishing
-1) After approx. 20 seconds a new window will open indicating the program is done
+1) After approx. 60 seconds a new window will open indicating the program is
+done - you should have caught at least one fish in this time, but preferably
+3 or more
 1) Check the new image samples in `/imgs/` - the ones containing text must be
 centered vertically, with minimal/no movement up and down between samples
 1) Append to `labels.txt` in the exact same manner as in the existing rows;
 `n,label` where `label` is the lower-case and snake_cased text of the subtitle.
-1) Delete `dataframe.txt`
+1) Delete `dataframe.csv`
 1) Run `py train_text_classifier.py`, it'll probably crash but that's okay
 1) Run `py train_text_classifier.py`, it should NOT crash
 1) Go back to Usage and try again with your new ML model
