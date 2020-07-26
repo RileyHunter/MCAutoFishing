@@ -5,16 +5,18 @@ import joblib
 import numpy as np
 import cv2
 
-sct = SubCaptureTool(True)
+from fishing_config import *
+
+sct = SubCaptureTool(override_resolution)
 time.sleep(5)
 clf = joblib.load('model.joblib')
 
 def do_fishing():
-    time.sleep(0.2)
+    time.sleep(time_to_reel)
     pyautogui.click(button='right')
-    time.sleep(1)
+    time.sleep(time_to_recast)
     pyautogui.click(button='right')
-    time.sleep(4)
+    time.sleep(time_to_pause_sampling)
 
 while True:
     time.sleep(0.2)
@@ -22,9 +24,6 @@ while True:
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         gray, img_bin = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         gray = cv2.bitwise_not(img_bin)
-        if gray.shape[0] == 39:
-            app = np.zeros(gray.shape[1])
-            gray = np.append(gray, [app], axis=0)
         features = np.concatenate(gray)
         pred = clf.predict([features])
         if pred != 'garbage':

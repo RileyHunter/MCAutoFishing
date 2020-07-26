@@ -30,27 +30,29 @@ class SubCaptureTool:
 
         win32gui.EnumWindows( winEnumHandler, None )
 
-        if self.mc_hwnd is None:
-            raise("No MC window found")
-
-        rect = win32gui.GetWindowRect(self.mc_hwnd)
-        x1 = rect[0]
-        y1 = rect[1]
-        x2 = rect[2]
-        y2 = rect[3]
-
-        # If in weird-screen mode
-        if (x1 == -8 and y1 == -8):
-            x2 += x1
-            y2 += y1
-            x1 = 0
-            y1 = 0
-        if self.override_pos:
-            x1 = 0
-            y1 = 0
-            x2 = 1920
-            y2 = 1040
-        print("Window %s:" % win32gui.GetWindowText(self.mc_hwnd))
+        if not self.override_pos:
+            if self.mc_hwnd is None:
+                raise("No MC window found")
+            else:
+                rect = win32gui.GetWindowRect(self.mc_hwnd)
+            x1 = rect[0]
+            y1 = rect[1]
+            x2 = rect[2]
+            y2 = rect[3]
+            # If in weird-screen mode
+            if (x1 == -8 and y1 == -8):
+                x2 += x1
+                y2 += y1
+                x1 = 0
+                y1 = 0
+            print("Window %s:" % win32gui.GetWindowText(self.mc_hwnd))
+        else:
+            x1 = override_top_left_x
+            y1 = override_top_left_y
+            x2 = override_bottom_right_x
+            y2 = override_bottom_right_y
+            print("Position override active")
+            
         print("\tLocation top left: (%d, %d)" % (x1, y1))
         print("\tLocation bot right: (%d, %d)" % (x2, y2))
 
